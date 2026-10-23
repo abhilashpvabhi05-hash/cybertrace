@@ -677,6 +677,148 @@
       letter-spacing: 1px;
     }
 
+    /* ===== OWNER DETAILS SECTION ===== */
+    .owner-section {
+      background: #080808;
+      border: 1px solid #1a1a1a;
+      border-radius: 1.4rem;
+      padding: 2rem 1.8rem;
+      margin-top: 1.8rem;
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.3s;
+    }
+
+    .owner-section:hover {
+      border-color: #2a0000;
+    }
+
+    .owner-section::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 3px;
+      height: 100%;
+      background: linear-gradient(180deg, transparent, var(--red), transparent);
+      opacity: 0.6;
+    }
+
+    .owner-section .section-title {
+      margin-bottom: 1.6rem;
+    }
+
+    .owner-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.4rem 2rem;
+    }
+
+    @media (max-width: 700px) {
+      .owner-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+      }
+    }
+
+    .owner-item {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+      border-bottom: 1px dashed #1e1e1e;
+      padding-bottom: 0.7rem;
+      transition: all 0.25s;
+      animation: slideUp 0.5s cubic-bezier(0.2, 0.9, 0.3, 1) backwards;
+      position: relative;
+    }
+
+    .owner-item:hover {
+      border-bottom-color: var(--red-dim);
+      transform: translateX(3px);
+    }
+
+    .owner-item:nth-child(1) { animation-delay: 0.05s; }
+    .owner-item:nth-child(2) { animation-delay: 0.1s; }
+    .owner-item:nth-child(3) { animation-delay: 0.15s; }
+
+    .owner-label {
+      font-size: 0.68rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: #555;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: color 0.2s;
+    }
+
+    .owner-item:hover .owner-label {
+      color: var(--red);
+    }
+
+    .owner-label i {
+      font-size: 0.75rem;
+      width: 1.1rem;
+      color: var(--red-dim);
+      transition: all 0.25s;
+    }
+
+    .owner-item:hover .owner-label i {
+      color: var(--red);
+      transform: scale(1.2);
+      filter: drop-shadow(0 0 5px var(--red-glow));
+    }
+
+    .owner-value {
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: #ddd;
+      word-break: break-word;
+      padding-left: 1.6rem;
+      min-height: 1.7rem;
+      display: flex;
+      align-items: center;
+      letter-spacing: 1px;
+      transition: color 0.2s, text-shadow 0.2s;
+    }
+
+    .owner-item:hover .owner-value {
+      color: #fff;
+      text-shadow: 0 0 8px rgba(255, 255, 255, 0.1);
+    }
+
+    .owner-value.placeholder {
+      color: #3a3a3a;
+      font-weight: 400;
+      font-style: italic;
+      font-size: 0.9rem;
+      letter-spacing: 1px;
+    }
+
+    /* ===== DIVIDER ===== */
+    .divider {
+      height: 1px;
+      margin: 1.8rem 0 0 0;
+      background: linear-gradient(90deg, transparent, var(--red), transparent);
+      opacity: 0.5;
+      position: relative;
+    }
+
+    .divider::after {
+      content: '';
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--red);
+      box-shadow: 0 0 10px var(--red);
+      animation: dotBlink 1.5s infinite;
+    }
+
     /* ===== MESSAGE BOX ===== */
     .message-box {
       background: linear-gradient(90deg, #1a0000 0%, #0d0000 100%);
@@ -871,6 +1013,32 @@
     </div>
   </div>
 
+  <!-- Divider between Vehicle Details and Owner Details -->
+  <div class="divider"></div>
+
+  <!-- Owner details section -->
+  <div class="owner-section">
+    <div class="section-title">
+      <i class="fas fa-user-shield"></i>
+      Owner Details
+    </div>
+
+    <div class="owner-grid" id="ownerGrid">
+      <div class="owner-item">
+        <div class="owner-label"><i class="fas fa-user"></i> Owner Name</div>
+        <div class="owner-value placeholder" id="ownerName">—</div>
+      </div>
+      <div class="owner-item">
+        <div class="owner-label"><i class="fas fa-home"></i> Address</div>
+        <div class="owner-value placeholder" id="ownerAddress">—</div>
+      </div>
+      <div class="owner-item">
+        <div class="owner-label"><i class="fas fa-phone-alt"></i> Mobile Number</div>
+        <div class="owner-value placeholder" id="ownerMobile">—</div>
+      </div>
+    </div>
+  </div>
+
   <div class="footer-note">
     <i class="fas fa-shield-alt"></i> Format: KL14AB1234 · No backend used
   </div>
@@ -940,6 +1108,7 @@
     const loader = document.getElementById('loader');
     const messageBox = document.getElementById('messageBox');
 
+    // Vehicle detail elements
     const regNoEl = document.getElementById('regNo');
     const companyEl = document.getElementById('company');
     const modelEl = document.getElementById('model');
@@ -950,16 +1119,34 @@
     const stateEl = document.getElementById('state');
     const statusEl = document.getElementById('status');
 
-    const detailValues = [regNoEl, companyEl, modelEl, vTypeEl, fuelEl, regDateEl, rtoEl, stateEl, statusEl];
+    // Owner detail elements (prepared for future authorized data population)
+    const ownerNameEl = document.getElementById('ownerName');
+    const ownerAddressEl = document.getElementById('ownerAddress');
+    const ownerMobileEl = document.getElementById('ownerMobile');
+
+    const vehicleDetailValues = [regNoEl, companyEl, modelEl, vTypeEl, fuelEl, regDateEl, rtoEl, stateEl, statusEl];
+    const ownerDetailValues = [ownerNameEl, ownerAddressEl, ownerMobileEl];
 
     // Indian vehicle registration regex
     const VEHICLE_REGEX = /^[A-Z]{2}[0-9]{2}[A-Z]{1,3}[0-9]{4}$/;
 
-    function resetDetails() {
-      detailValues.forEach(el => {
+    function resetVehicleDetails() {
+      vehicleDetailValues.forEach(el => {
         el.textContent = '—';
         el.classList.add('placeholder');
       });
+    }
+
+    function resetOwnerDetails() {
+      ownerDetailValues.forEach(el => {
+        el.textContent = '—';
+        el.classList.add('placeholder');
+      });
+    }
+
+    function resetAllDetails() {
+      resetVehicleDetails();
+      resetOwnerDetails();
     }
 
     function clearUI() {
@@ -975,6 +1162,35 @@
       validationMsg.innerHTML = '';
     }
 
+    /**
+     * Populates the owner details section.
+     * This function is the single entry point for future authorized data sources.
+     * It intentionally does NOT fabricate data — only sets values when provided.
+     * 
+     * @param {Object} ownerData - Object with optional keys: name, address, mobile
+     */
+    function populateOwnerDetails(ownerData) {
+      if (!ownerData || typeof ownerData !== 'object') return;
+
+      if (ownerData.name) {
+        ownerNameEl.textContent = ownerData.name;
+        ownerNameEl.classList.remove('placeholder');
+      }
+      if (ownerData.address) {
+        ownerAddressEl.textContent = ownerData.address;
+        ownerAddressEl.classList.remove('placeholder');
+      }
+      if (ownerData.mobile) {
+        ownerMobileEl.textContent = ownerData.mobile;
+        ownerMobileEl.classList.remove('placeholder');
+      }
+    }
+
+    // Expose the owner population hook for future integrations (authorized sources only)
+    window.CyberTrace = {
+      populateOwnerDetails: populateOwnerDetails
+    };
+
     function performSearch() {
       const rawValue = input.value.trim().toUpperCase();
 
@@ -983,14 +1199,14 @@
 
       if (!rawValue) {
         setValidationError('Please enter a vehicle registration number.');
-        resetDetails();
+        resetAllDetails();
         input.focus();
         return;
       }
 
       if (!VEHICLE_REGEX.test(rawValue)) {
         setValidationError('Invalid format. Use: KL14AB1234');
-        resetDetails();
+        resetAllDetails();
         input.focus();
         return;
       }
@@ -1002,13 +1218,22 @@
         loader.classList.remove('active');
         searchBtn.disabled = false;
 
-        resetDetails();
+        // Reset everything first
+        resetAllDetails();
+
+        // Show the searched registration number
         regNoEl.textContent = rawValue;
         regNoEl.classList.remove('placeholder');
 
+        // Show the "not connected" message
         messageBox.classList.remove('hidden');
         clearValidation();
         input.blur();
+
+        // NOTE: Owner details intentionally remain as "—" placeholders.
+        // When an authorized data source is connected later, call:
+        //   window.CyberTrace.populateOwnerDetails({ name, address, mobile });
+        // Do not populate this without proper authorization.
       }, 900);
     }
 
@@ -1024,7 +1249,7 @@
     input.addEventListener('input', function() {
       clearValidation();
       messageBox.classList.add('hidden');
-      resetDetails();
+      resetAllDetails();
       this.value = this.value.toUpperCase();
     });
 
@@ -1032,7 +1257,7 @@
       this.value = this.value.trim().toUpperCase();
     });
 
-    resetDetails();
+    resetAllDetails();
     clearUI();
   })();
 </script>
